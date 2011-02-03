@@ -1,4 +1,4 @@
-package br.com.jera.cubo;
+﻿package br.com.jera.cubo;
 
 import br.com.jera.graphic.GraphicDevice;
 import br.com.jera.graphic.Math.PRIMITIVE_TYPE;

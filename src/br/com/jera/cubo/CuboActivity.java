@@ -1,4 +1,4 @@
-package br.com.jera.cubo;
+﻿package br.com.jera.cubo;
 
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
