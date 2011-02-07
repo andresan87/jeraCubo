@@ -3,6 +3,7 @@
 import android.app.Activity;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import br.com.jera.platform.android.AndroidSurfaceView;
 
 public class CuboActivity extends Activity {
 
@@ -10,20 +11,23 @@ public class CuboActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		surface = new GLSurfaceView(this);
-		surface.setRenderer(new Renderer(this));
+		surface = new AndroidSurfaceView(this);
+		surface.setRenderer(new Renderer(this, surface));
+		surface.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 		setContentView(surface);
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
+		surface.onPause();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		surface.onResume();
 	}
 
-	private GLSurfaceView surface;
+	private AndroidSurfaceView surface;
 }
