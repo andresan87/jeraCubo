@@ -6,6 +6,7 @@ import br.com.jera.graphic.Sprite;
 import br.com.jera.graphic.Texture;
 import br.com.jera.graphic.VertexArray;
 import br.com.jera.input.InputListener;
+import br.com.jera.util.BaseApplication;
 import br.com.jera.util.FrameTimer;
 import br.com.jera.util.Math.PRIMITIVE_TYPE;
 import br.com.jera.util.Math.Vector2;
@@ -13,7 +14,7 @@ import br.com.jera.util.Math.Vector3;
 import br.com.jera.util.Math.Vector4;
 import br.com.jera.util.Math.Vertex;
 
-public class CuboApp {
+public class CuboApp implements BaseApplication {
 
 	private GraphicDevice graphicDevice;
 	private VertexArray cube;
@@ -44,26 +45,24 @@ public class CuboApp {
 
 		openglesLogo.draw(glLogoPos, new Vector2(1,0));
 		glLogoPos = glLogoPos.add(input.getTouchMove());
-		
+
 		jeraSprite.draw(new Vector2(10, 10), jeraSprite.getBitmapSize(), 0,
 				new Vector2(0.0f, 0.0f), 0);
 
 		headbenze.draw(new Vector2(screenSize.x / 2.0f, screenSize.y), 0,
 				new Vector2(0.5f, 1.0f), frameTimer.setFrame(0, 3, 150));
-		
-		if (input.getLastTouch() != null) {
-			headbenze.draw(input.getLastTouch(), 0, new Vector2(0.5f, 0.5f), 0);
-		}
-		if (input.getCurrentTouch() != null) {
-			graphicDevice.setAlphaMode(ALPHA_MODE.ADD);
-			headbenze.draw(input.getCurrentTouch(), 0, new Vector2(0.5f, 0.5f), 15);
+
+		for (int t=0; t<input.getTouchCount(); t++) {
+			if (input.getLastTouch(t) != null) {
+				headbenze.draw(input.getLastTouch(t), 0, new Vector2(0.5f, 0.0f), 0);
+			}
+			if (input.getCurrentTouch(t) != null) {
+				graphicDevice.setAlphaMode(ALPHA_MODE.ADD);
+				headbenze.draw(input.getCurrentTouch(t), 0, new Vector2(0.5f, 0.0f), 15);
+			}
 		}
 
 		graphicDevice.endScene();
-	}
-	
-	public void resetSurface(final int width, final int height) {
-		glLogoPos.x = (float)width;
 	}
 
 	public void create(GraphicDevice graphicDevice, InputListener listener) {
@@ -71,6 +70,10 @@ public class CuboApp {
 		this.input = listener;
 		graphicDevice.setBackgroundColor(new Vector4(0.2f, 0.2f, 0.2f, 1.0f));
 		graphicDevice.setCullingMode(GraphicDevice.CULLING_MODE.CULL_NONE);
+	}
+
+	@Override
+	public void loadResources() {
 		Vertex[] vertices = {
 				// face 1
 				new Vertex(new Vector3(-1, 1, 1), new Vector2(0, 0)),
@@ -114,5 +117,14 @@ public class CuboApp {
 		jeraSprite = new Sprite(graphicDevice, R.drawable.logo_jera, 1, 1);
 		headbenze = new Sprite(graphicDevice, R.drawable.headbenze, 4, 4);
 		openglesLogo = new Sprite(graphicDevice, R.drawable.opengles, 1, 1);
+	}
+
+	@Override
+	public void resetFrameBuffer(int width, int height) {
+		glLogoPos.x = (float)width;
+	}
+
+	@Override
+	public void update() {
 	}
 }
