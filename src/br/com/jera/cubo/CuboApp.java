@@ -7,12 +7,12 @@ import br.com.jera.graphic.Texture;
 import br.com.jera.graphic.VertexArray;
 import br.com.jera.input.InputListener;
 import br.com.jera.util.BaseApplication;
+import br.com.jera.util.CommonMath.PRIMITIVE_TYPE;
+import br.com.jera.util.CommonMath.Vector2;
+import br.com.jera.util.CommonMath.Vector3;
+import br.com.jera.util.CommonMath.Vector4;
+import br.com.jera.util.CommonMath.Vertex;
 import br.com.jera.util.FrameTimer;
-import br.com.jera.util.Math.PRIMITIVE_TYPE;
-import br.com.jera.util.Math.Vector2;
-import br.com.jera.util.Math.Vector3;
-import br.com.jera.util.Math.Vector4;
-import br.com.jera.util.Math.Vertex;
 
 public class CuboApp implements BaseApplication {
 
@@ -20,10 +20,9 @@ public class CuboApp implements BaseApplication {
 	private VertexArray cube;
 	private float angle = 0.0f;
 	private Texture jeraTexture;
-	private Sprite jeraSprite, headbenze, openglesLogo;
+	private Sprite jeraSprite, headbenze, debugSurface;
 	private FrameTimer frameTimer = new FrameTimer();
 	private InputListener input;
-	private Vector2 glLogoPos = new Vector2();
 
 	public void draw() {
 
@@ -32,27 +31,29 @@ public class CuboApp implements BaseApplication {
 		Vector2 screenSize = graphicDevice.getScreenSize();
 
 		graphicDevice.beginScene();
-		jeraTexture.bindTexture();
 
+		graphicDevice.setup2DView();
+		graphicDevice.setDepthTest(false);
+		graphicDevice.setAlphaMode(ALPHA_MODE.DEFAULT);
+
+		// tileMapPos = tileMapPos.add(input.getTouchMove());
+		// tileMap.draw(new Classic2DViewer(tileMapPos.multiply(-1)));
+
+		jeraSprite.draw(new Vector2(10, 10), jeraSprite.getBitmapSize(), 0, new Vector2(0.0f, 0.0f), 0, true);
+
+		headbenze.draw(new Vector2(screenSize.x / 2.0f, screenSize.y), 0, new Vector2(0.5f, 1.0f), frameTimer.setFrame(0, 3, 150));
+
+		graphicDevice.setDepthTest(true);
 		graphicDevice.setup3DView();
 		graphicDevice.setAlphaMode(ALPHA_MODE.NONE);
-		cube.drawGeometry(new Vector3(0, 0, 5), new Vector3(0, angle, 0),
-				new Vector3(1, 1, 1));
+		jeraTexture.bindTexture();
+		cube.drawGeometry(new Vector3(0, 0, 5), new Vector3(0, angle, 0), new Vector3(1, 1, 1));
 		jeraTexture.unbindTexture();
 
 		graphicDevice.setup2DView();
+		graphicDevice.setDepthTest(false);
 		graphicDevice.setAlphaMode(ALPHA_MODE.DEFAULT);
-
-		openglesLogo.draw(glLogoPos, new Vector2(1,0));
-		glLogoPos = glLogoPos.add(input.getTouchMove());
-
-		jeraSprite.draw(new Vector2(10, 10), jeraSprite.getBitmapSize(), 0,
-				new Vector2(0.0f, 0.0f), 0);
-
-		headbenze.draw(new Vector2(screenSize.x / 2.0f, screenSize.y), 0,
-				new Vector2(0.5f, 1.0f), frameTimer.setFrame(0, 3, 150));
-
-		for (int t=0; t<input.getTouchCount(); t++) {
+		for (int t = 0; t < input.getTouchCount(); t++) {
 			if (input.getLastTouch(t) != null) {
 				headbenze.draw(input.getLastTouch(t), 0, new Vector2(0.5f, 0.0f), 0);
 			}
@@ -61,6 +62,11 @@ public class CuboApp implements BaseApplication {
 				headbenze.draw(input.getCurrentTouch(t), 0, new Vector2(0.5f, 0.0f), 15);
 			}
 		}
+
+		debugSurface.draw(new Vector2(100, 100), new Vector2(0, 0));
+		debugSurface.draw(new Vector2(100.325f, 140.325f), new Vector2(0, 0));
+		debugSurface.draw(new Vector2(100.375f, 180.375f), new Vector2(0, 0));
+		debugSurface.draw(new Vector2(100.5f, 220.5f), new Vector2(0, 0));
 
 		graphicDevice.endScene();
 	}
@@ -94,8 +100,7 @@ public class CuboApp implements BaseApplication {
 				new Vertex(new Vector3(1, -1, -1), new Vector2(1, 1)),
 
 				// face 3
-				new Vertex(new Vector3(-1, -1, -1), new Vector2(1, 1)),
-				new Vertex(new Vector3(-1, -1, 1), new Vector2(1, 0)),
+				new Vertex(new Vector3(-1, -1, -1), new Vector2(1, 1)), new Vertex(new Vector3(-1, -1, 1), new Vector2(1, 0)),
 				new Vertex(new Vector3(-1, 1, 1), new Vector2(0, 0)),
 
 				new Vertex(new Vector3(-1, -1, -1), new Vector2(1, 1)),
@@ -103,28 +108,25 @@ public class CuboApp implements BaseApplication {
 				new Vertex(new Vector3(-1, 1, -1), new Vector2(0, 1)),
 
 				// face 4
-				new Vertex(new Vector3(1, -1, 1), new Vector2(1, 0)),
-				new Vertex(new Vector3(1, -1, -1), new Vector2(1, 1)),
+				new Vertex(new Vector3(1, -1, 1), new Vector2(1, 0)), new Vertex(new Vector3(1, -1, -1), new Vector2(1, 1)),
 				new Vertex(new Vector3(1, 1, 1), new Vector2(0, 0)),
 
-				new Vertex(new Vector3(1, -1, -1), new Vector2(1, 1)),
-				new Vertex(new Vector3(1, 1, -1), new Vector2(0, 1)),
+				new Vertex(new Vector3(1, -1, -1), new Vector2(1, 1)), new Vertex(new Vector3(1, 1, -1), new Vector2(0, 1)),
 				new Vertex(new Vector3(1, 1, 1), new Vector2(0, 0)), };
 
-		cube = graphicDevice.createVertexArray(vertices,
-				PRIMITIVE_TYPE.TRIANGLE_LIST);
+		cube = graphicDevice.createVertexArray(vertices, PRIMITIVE_TYPE.TRIANGLE_LIST);
 		jeraTexture = graphicDevice.createStaticTexture(R.drawable.jera);
 		jeraSprite = new Sprite(graphicDevice, R.drawable.logo_jera, 1, 1);
 		headbenze = new Sprite(graphicDevice, R.drawable.headbenze, 4, 4);
-		openglesLogo = new Sprite(graphicDevice, R.drawable.opengles, 1, 1);
+		debugSurface = new Sprite(graphicDevice, R.drawable.debug_surface, 1, 1);
 	}
 
 	@Override
 	public void resetFrameBuffer(int width, int height) {
-		glLogoPos.x = (float)width;
+		graphicDevice.setup3DView(width, height);
 	}
 
 	@Override
-	public void update() {
+	public void update(long lastFrameDeltaTimeMS) {
 	}
 }
