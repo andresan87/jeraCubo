@@ -129,4 +129,9 @@ public class CuboApp implements BaseApplication {
 	@Override
 	public void update(long lastFrameDeltaTimeMS) {
 	}
+
+	@Override
+	public String getStateName() {
+		return "cubo";
+	}
 }
