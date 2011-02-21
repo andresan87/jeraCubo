@@ -127,7 +127,8 @@ public class CuboApp implements BaseApplication {
 	}
 
 	@Override
-	public void update(long lastFrameDeltaTimeMS) {
+	public STATE update(long lastFrameDeltaTimeMS) {
+		return BaseApplication.STATE.CONTINUE;
 	}
 
 	@Override
